@@ -1,0 +1,286 @@
+basePath: /
+definitions:
+  participant.Participant:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  prize.Prize:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+    required:
+    - description
+    type: object
+  promo.Promo:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  promo.RaffleResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - description
+    - name
+    type: object
+  promo.RequestPromo:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  promo.ResponsePromo:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      participants:
+        additionalProperties:
+          $ref: '#/definitions/participant.Participant'
+        type: object
+      prizes:
+        additionalProperties:
+          $ref: '#/definitions/prize.Prize'
+        type: object
+    required:
+    - name
+    type: object
+info:
+  contact: {}
+  title: Products_Store
+  version: "1.0"
+paths:
+  /promo:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/promo.Promo'
+            type: array
+      summary: Retrieves all promos
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: json body
+        in: body
+        name: json_body
+        required: true
+        schema:
+          $ref: '#/definitions/promo.Promo'
+      responses:
+        "200":
+          description: id
+          schema:
+            type: string
+        "400":
+          description: Field validation failed on the 'required' tag
+          schema:
+            type: string
+      summary: Create new promo
+  /promo/{id}:
+    delete:
+      parameters:
+      - description: Promo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: There is no promo with id
+          schema:
+            type: string
+      summary: Delete promo
+    get:
+      parameters:
+      - description: Promo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/promo.ResponsePromo'
+        "400":
+          description: There is no promo with id
+          schema:
+            type: string
+      summary: Retrieves promo by id
+    post:
+      parameters:
+      - description: Promo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/promo.RaffleResponse'
+            type: array
+        "400":
+          description: There is no promo with id
+          schema:
+            type: string
+        "409":
+          description: Count of participants and prizes is not equal or empty
+          schema:
+            type: string
+      summary: Do raffle
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Promo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: json body
+        in: body
+        name: json_body
+        required: true
+        schema:
+          $ref: '#/definitions/promo.RequestPromo'
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: There is no promo with id
+          schema:
+            type: string
+      summary: Edit promo
+  /promo/{id}/participant:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Promo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: json body
+        in: body
+        name: json_body
+        required: true
+        schema:
+          $ref: '#/definitions/participant.Participant'
+      responses:
+        "200":
+          description: id
+          schema:
+            type: string
+        "400":
+          description: There is no promo with id
+          schema:
+            type: string
+      summary: Create new participant
+  /promo/{id}/participant/{partId}:
+    delete:
+      parameters:
+      - description: Promo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Participant ID
+        in: path
+        name: partId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: There is no participant with id
+          schema:
+            type: string
+      summary: Delete participant
+  /promo/{id}/prize:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Promo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: json body
+        in: body
+        name: json_body
+        required: true
+        schema:
+          $ref: '#/definitions/prize.Prize'
+      responses:
+        "200":
+          description: id
+          schema:
+            type: string
+        "400":
+          description: There is no promo with id
+          schema:
+            type: string
+      summary: Create new prize
+  /promo/{id}/prize/{prizeId}:
+    delete:
+      parameters:
+      - description: Promo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Prize ID
+        in: path
+        name: prizeId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: There is no prize with id
+          schema:
+            type: string
+      summary: Delete prize
+swagger: "2.0"
